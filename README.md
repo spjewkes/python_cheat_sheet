@@ -1,5 +1,5 @@
 # Python Cheat Sheet
-This repo is for general Python information that could be useful for any development work.
+This repository is for general Python information that could be useful for any development work.
 
 ## Notes	from 'Transforming Code	into Beautiful,	Idiomatic Python'
 
@@ -14,7 +14,7 @@ Do not use indices to reference items in a list. Do the following instead:
 ```python
 colors = ['blue', 'red', 'green']
 for color in colors:
-    print color
+    print(color)
 ```
 
 To go backwards through a list use the function ```reversed```.
@@ -27,10 +27,10 @@ If you want to loop over two lists at the same time then use ```izip``` as follo
 colors = ['blue', 'red', 'green']
 names = ['alice', 'bob', 'eve']
 for name, color in izip(names, colors):
-    print name, color
+    print(name, color)
 ```
 
-Note that ```zip``` does the same thing but will generate the entire structure in memory beforehand. The benefit of things like ```izip``` is that they may end up reusing the same allocations so there could be performance savings too.
+Note that ```zip``` does the same thing but will generate the entire structure in memory beforehand. The benefit of ```izip``` is that it may end up reusing the same allocations so there could be performance savings too.
 
 Use ```sorted``` to reorder a list. Try not to use custom comparison functions for sorting as this function may get called _n Log n_  times. Use ```sorted```'s ```key``` functions instead. This will be called just once per item. Note that comparison functions are no longer in Python 3.
 
@@ -47,7 +47,7 @@ while True:
     blocks.append(block)
 ```
 
-Can use ```iter``` with its ```sentinel``` paremeter instead to make the code clearer:
+Can use ```iter``` with its ```sentinel``` parameter instead to make the code clearer:
 
 ```python
 blocks = []
@@ -55,7 +55,7 @@ for block in iter(partial(f.read, 32), ''):
     blocks.append(block)
 ```
 
-With the use of the sentinel value in the secons parameter of ```iter``` the first paramter now expects a callable object. This can be done with the use of ```partial``` to create a function that takes no parameters but returns the result of the read.
+With the use of the sentinel value in the second parameter of ```iter``` the first parameter now expects a callable object. This can be done with the use of ```partial``` to create a function that takes no parameters but returns the result of the read.
 
 Avoiding the use of a boolean to find something in a list by using ```else``` with ```for```. For example with:
 
@@ -83,7 +83,7 @@ def find(seq, target):
     return i
 ```
 
-The ```else``` is called at the end of the ```for``` loop if there was no ```break```. The only issue with this style is that the ```else``` keyword in this sort of loop is not widely known and may cause some confusion with developers maintaining it. This style was defined by Donald Knuth.
+The ```else``` is called at the end of the ```for``` loop if there was no ```break```. The only issue with this style is that the ```else``` keyword in this instance is not widely known and may cause some confusion. According to the video this use of ```else``` in this way was proposed by Donald Knuth.
 
 ### General dictionary uses
 
@@ -92,7 +92,7 @@ Looping over dictionary keys is simply:
 ```python
 d = { '1': 'alice', '2': 'bob', '3': 'eve' }
 for k in d:
-    print k
+    print(k)
 ```
 
 Do not use this if you wish to modify the dictionary whilst iterating. You should use ```keys``` which makes a copy, allowing you to make modifications:
@@ -118,7 +118,7 @@ Using ```izip``` over ```zip``` should consume less memory as it will be reused 
 Use ```defaultdict``` for doing something like maintaining a count of items in a list. For example:
 
 ```python
-names = [`alice', 'bob', 'eve', 'alice', 'bob', 'alice']
+names = ['alice', 'bob', 'eve', 'alice', 'bob', 'alice']
 d = defaultdict(int)
 for name in names:
     d[name] += 1
@@ -136,9 +136,9 @@ for name in names:
     d[key].append(name)
 ```
 
-In the above example the ```defaultdict``` will be an empty list is returned if the key does not match an existing list in the dictionary. An older way of doing this would be to use the dicitonary function ```setdefault``` when querying the key.
+In the above example the ```defaultdict``` will be an empty list is returned if the key does not match an existing list in the dictionary. An older way of doing this would be to use the dictionary function ```setdefault``` when querying the key.
 
-Sometimes you want to link dictionaries together such that if the key is specified in a particular dicitonary then it may take priority over an entry in another dictionary. A common use of this might be program arguments which override some values in environment variables which in turn may override default values. Use of ```ChainMap``` is the most efficient way to do this.
+Sometimes you want to link dictionaries together such that if the key is specified in a particular dictionary then it may take priority over an entry in another dictionary. A common use of this might be program arguments which override some values in environment variables which in turn may override default values. Use of ```ChainMap``` is the most efficient way to do this.
 
 ### Improving clarity
 
@@ -173,7 +173,7 @@ x, y = y, x
 
 This updates the state all at once. It avoid potential mistakes with temporary variables and is much clearer. This work even better if you're making calculations with the old values of state and want to update a set of new variables with the new state in one go.
 
-### Efficieny
+### Efficiency
 
 Never add strings together. Always use ```join```.
 
@@ -197,11 +197,11 @@ seq.appendleft('value')
 
 Decorators can be used to separate business logic from administration code. For example, if you want to cache a look-up value in functions this could use the ```@cache``` decorator. This is in Python 3 but can easily be written for earlier versions.
 
-Rather than copying a thread's context by calling ```getcontext().copy()``` for some reason use ```with`` instead. For example if you need to change the decimal precision:
+Rather than copying a thread's context by calling ```getcontext().copy()``` for some reason use ```with``` instead. For example if you need to change the decimal precision:
 
 ```python
 with localcontext(Context(prec=50)):
-    print Decimal(355) / Decimal(113)
+    print(Decimal(355) / Decimal(113))
 ```
 
 So the ```with``` is managing the creation of a new context and cleaning it up. This is far easier to read and maintain. Another use is with opening files as ```with``` will ensure that the file is closed automatically.
@@ -212,8 +212,8 @@ Locks is another good example. Looking at the bad way of doing it:
 lock = threading.Lock()
 lock.acquire()
 try:
-    print "Critical section 1"
-    print "Critical section 2"
+    print("Critical section 1")
+    print("Critical section 2")
 finally:
     lock.release()
 ```
@@ -223,8 +223,8 @@ This can be improved as follows:
 ```python
 lock = threading.Lock()
 with lock:
-    print "Critical section 1"
-    print "Critical section 2"
+    print("Critical section 1")
+    print("Critical section 2")
 ```
 
 A more advanced use of a context manager is an example of trying to remove a file that might not be there:
